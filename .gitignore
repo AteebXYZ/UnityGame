@@ -23,7 +23,7 @@
 /Client/[Aa]ssets/Plugins/Editor/JetBrains*
 
 # Visual Studio cache directory
-/Client/.vs/
+/Client/.vscode/
 
 # Gradle cache directory
 /Client/.gradle/
@@ -98,7 +98,7 @@
 /Server/[Aa]ssets/Plugins/Editor/JetBrains*
 
 # Visual Studio cache directory
-/Server/.vs/
+/Server/.vscode/
 
 # Gradle cache directory
 /Server/.gradle/
