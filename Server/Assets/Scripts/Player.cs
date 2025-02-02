@@ -14,6 +14,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     private PlayerMovement movement;
 
+
     [SerializeField]
     private Transform camTransform;
 
@@ -36,6 +37,9 @@ public class Player : MonoBehaviour
 
         player.SendSpawned();
         list.Add(id, player);
+
+        player.SendMapData(id);
+        RigidBodyController.InitializeRigidObjects();
     }
 
     #region Messages
@@ -55,6 +59,30 @@ public class Player : MonoBehaviour
         message.AddString(Username);
         message.AddVector3(transform.position);
         return message;
+    }
+
+    private void SendMapData(ushort toClientId)
+    {
+        List<NetworkedObject> mapObjects = GameLogic.mapObjects;
+        Message message = Message.Create(MessageSendMode.reliable, ServerToClientId.mapObjects);
+        message.AddInt(mapObjects.Count);
+        foreach (var obj in mapObjects)
+        {
+            message.AddInt(obj.id);
+            message.AddBool(obj.isRigid);
+            message.AddString(obj.prefabName);
+            message.AddFloat(obj.x);
+            message.AddFloat(obj.y);
+            message.AddFloat(obj.z);
+            message.AddFloat(obj.rotX);
+            message.AddFloat(obj.rotY);
+            message.AddFloat(obj.rotZ);
+            message.AddFloat(obj.scaleX);
+            message.AddFloat(obj.scaleY);
+            message.AddFloat(obj.scaleZ);
+        }
+
+        NetworkManager.Singleton.Server.Send(message, toClientId);
     }
 
     [MessageHandler((ushort)ClientToServerId.name)]

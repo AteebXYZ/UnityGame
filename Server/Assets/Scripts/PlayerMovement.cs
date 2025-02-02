@@ -77,7 +77,6 @@ public class PlayerMovement : MonoBehaviour
 
     public void SetInputs(Vector2 inputs, float jumpState, Vector3 forward)
     {
-        Debug.Log("here 2");
         playerInputs = inputs;
         this.jumpState = jumpState;
         camProxy.forward = forward;

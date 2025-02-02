@@ -5,13 +5,17 @@ using UnityEngine;
 public enum ServerToClientId : ushort
 {
     playerSpawned = 1,
-    playerMovement
+    playerMovement,
+    mapObjects,
+    rigidBodies
 }
 
 public enum ClientToServerId : ushort
 {
     name = 1,
-    inputs
+    inputs,
+    sendGrab
+
 }
 
 public class NetworkManager : MonoBehaviour

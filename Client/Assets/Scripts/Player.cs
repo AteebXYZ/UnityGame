@@ -62,4 +62,37 @@ public class Player : MonoBehaviour
             player.Move(message.GetVector3(), message.GetVector3());
         }
     }
+
+    [MessageHandler((ushort)ServerToClientId.mapObjects)]
+    private static void SpawnMapObjects(Message message)
+    {
+        int objectCount = message.GetInt();
+        for (int i = 0; i < objectCount; i++)
+        {
+            int id = message.GetInt();
+            bool isRigid = message.GetBool();
+            string prefabName = message.GetString();
+            float x = message.GetFloat();
+            float y = message.GetFloat();
+            float z = message.GetFloat();
+            float rx = message.GetFloat();
+            float ry = message.GetFloat();
+            float rz = message.GetFloat();
+            float sx = message.GetFloat();
+            float sy = message.GetFloat();
+            float sz = message.GetFloat();
+
+            GameObject prefab = Resources.Load<GameObject>($"Prefabs/{prefabName}");
+            if (prefab != null)
+            {
+                GameObject obj = Instantiate(prefab, new Vector3(x, y, z), Quaternion.Euler(rx, ry, rz));
+                obj.transform.localScale = new Vector3(sx, sy, sz);
+                obj.GetComponent<NetworkedObject>().id = id;
+            }
+            else
+            {
+                Debug.Log("Missing prefab: " + prefabName);
+            }
+        }
+    }
 }
