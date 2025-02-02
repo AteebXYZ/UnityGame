@@ -14,10 +14,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     private PlayerMovement movement;
 
+    [SerializeField]
+    private Transform camTransform;
+
     private void OnDestroy()
     {
         list.Remove(Id);
     }
+
+
 
     public static void Spawn(ushort id, string username)
     {
@@ -61,10 +66,9 @@ public class Player : MonoBehaviour
     [MessageHandler((ushort)ClientToServerId.inputs)]
     private static void Inputs(ushort fromClientId, Message message)
     {
-        if (!list.TryGetValue(fromClientId, out Player player))
+        if (list.TryGetValue(fromClientId, out Player player))
         {
-            Debug.Log("here");
-            player.Movement.SetInputs(message.GetVector2());
+            player.Movement.SetInputs(message.GetVector2(), message.GetFloat(), message.GetVector3());
         }
     }
     #endregion

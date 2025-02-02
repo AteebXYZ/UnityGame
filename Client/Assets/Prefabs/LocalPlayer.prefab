@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6151711977793107077}
   - component: {fileID: 1286368180939078791}
   - component: {fileID: 2658958102786500555}
+  - component: {fileID: 6028252783327990398}
   m_Layer: 0
   m_Name: Camera
   m_TagString: Untagged
@@ -66,7 +67,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 60
+  field of view: 90
   orthographic: 0
   orthographic size: 5
   m_Depth: 0
@@ -92,6 +93,20 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1187743567950258813}
   m_Enabled: 1
+--- !u!114 &6028252783327990398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1187743567950258813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9e7185c4b05f21fb9eed0659c7d2dbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sensitivity: 2
+  player: {fileID: 7717201548968925836}
 --- !u!1 &5376044232438741219
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,6 +287,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 6ee0c84e-ae35-4395-bb26-833a14b87d43
     m_ActionName: Movement/WASD[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5425435048531240245}
+        m_TargetAssemblyTypeName: PlayerController, Assembly-CSharp
+        m_MethodName: Jump
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 83c40fdf-1093-4a4e-8fb1-8e4480f4fb40
+    m_ActionName: Movement/Jump[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 6028252783327990398}
+        m_TargetAssemblyTypeName: CameraMovement, Assembly-CSharp
+        m_MethodName: Look
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: f92de2c6-4118-4037-8857-082275a14841
+    m_ActionName: Movement/Look[/Mouse/delta/up,/Mouse/delta/down,/Mouse/delta/left,/Mouse/delta/right]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: kbm
   m_DefaultActionMap: Movement
@@ -325,6 +372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75c3f82d7682c9bf586e4e347f782a62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camTransform: {fileID: 0}
 --- !u!114 &5425435048531240245
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -11,28 +11,47 @@ using RiptideNetworking.Utils;
 
 public class PlayerController : MonoBehaviour
 {
-    private Vector2 inputs;
+
+    private List<object> inputs = new List<object>();
     [SerializeField] Transform camTransform;
+
+    private float jumpState = 0f;
+    private Vector2 moveInput;
     void Start()
     {
-        inputs = Vector2.zero;
+        inputs = new List<object>();
+        jumpState = 0f;
+        moveInput = Vector2.zero;
     }
 
     void FixedUpdate()
     {
+        inputs.Add(moveInput);
+        inputs.Add(jumpState);
         SendInputs();
     }
 
     public void Move(InputAction.CallbackContext ctx)
     {
-        inputs = ctx.ReadValue<Vector2>();
+        moveInput = ctx.ReadValue<Vector2>();
+    }
+
+    public void Jump(InputAction.CallbackContext ctx)
+    {
+        jumpState = ctx.ReadValue<float>();
     }
 
     private void SendInputs()
     {
         Message message = Message.Create(MessageSendMode.unreliable, ClientToServerId.inputs);
-        message.AddVector2(inputs);
+        for (int i = 0; i < inputs.Count; i += 3)
+        {
+            message.AddVector2((Vector2)inputs[i]);
+            message.AddFloat((float)inputs[i + 1]);
+        }
         message.AddVector3(camTransform.forward);
         NetworkManager.Singleton.Client.Send(message);
+        inputs.Clear();
     }
 }
+
