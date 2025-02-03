@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RiptideNetworking;
 using RiptideNetworking.Utils;
+using System;
 
 public class RigidBodyController : MonoBehaviour
 {
@@ -51,6 +52,7 @@ public class RigidBodyController : MonoBehaviour
                 message.AddInt(obj.id);
                 message.AddVector3(obj.transform.position);
                 message.AddQuaternion(obj.transform.rotation);
+                message.AddInt(NetworkManager.Singleton.CurrentTick);
             }
 
         }

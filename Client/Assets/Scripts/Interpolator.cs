@@ -38,7 +38,7 @@ public class Interpolator : MonoBehaviour
                 float ticksToReach = Mathf.Max(1, from.Tick - to.Tick);
                 if (from.Tick - to.Tick != 0)
                 {
-                    Debug.Log(from.Tick - to.Tick);
+                    // Debug.Log(from.Tick - to.Tick);
                 }
                 timeToReachTarget = ticksToReach * Time.fixedDeltaTime;
             }

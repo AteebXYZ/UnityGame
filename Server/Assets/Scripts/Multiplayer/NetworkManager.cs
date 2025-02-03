@@ -62,7 +62,7 @@ public class NetworkManager : MonoBehaviour
     private void FixedUpdate()
     {
         Server.Tick();
-        if (CurrentTick % 120 == 0)
+        if (CurrentTick % 300 == 0)
         {
             SendSync();
         }
