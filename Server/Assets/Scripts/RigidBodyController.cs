@@ -23,8 +23,9 @@ public class RigidBodyController : MonoBehaviour
             {
                 rigidList.Add(obj);
             }
+            initialized = true;
         }
-        initialized = true;
+
         Debug.Log($"[SERVER] RigidBodyController initialized with {rigidList.Count} rigid objects.");
     }
 
@@ -43,11 +44,20 @@ public class RigidBodyController : MonoBehaviour
         Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.rigidBodies);
         message.AddInt(rigidList.Count);
 
-        foreach (NetworkedObject obj in rigidList)
+        try
         {
-            message.AddInt(obj.id);
-            message.AddVector3(obj.transform.position);
-            message.AddQuaternion(obj.transform.rotation);
+            foreach (NetworkedObject obj in rigidList)
+            {
+                message.AddInt(obj.id);
+                message.AddVector3(obj.transform.position);
+                message.AddQuaternion(obj.transform.rotation);
+            }
+
+        }
+        catch (System.Exception)
+        {
+
+            throw;
         }
 
         // Broadcast the message to all clients.

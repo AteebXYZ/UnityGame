@@ -9,8 +9,9 @@ public class Player : MonoBehaviour
     public ushort Id { get; private set; }
     public bool IsLocal { get; private set; }
 
-    [SerializeField]
-    private Transform camTransform;
+    [SerializeField] private Transform camTransform;
+    [SerializeField] private Interpolator interpolator;
+
     private string username;
 
     private void OnDestroy()
@@ -18,9 +19,9 @@ public class Player : MonoBehaviour
         list.Remove(Id);
     }
 
-    private void Move(Vector3 newPosition, Vector3 forward)
+    private void Move(int tick, Vector3 newPosition, Vector3 forward)
     {
-        transform.position = newPosition;
+        interpolator.NewUpdate(tick, newPosition);
         if (!IsLocal)
         {
             camTransform.forward = forward;
@@ -41,7 +42,7 @@ public class Player : MonoBehaviour
             player.IsLocal = false;
         }
 
-        player.name = $"Player {id} (username)";
+        player.name = $"Player {username}";
         player.Id = id;
         player.username = username;
 
@@ -59,7 +60,7 @@ public class Player : MonoBehaviour
     {
         if (list.TryGetValue(message.GetUShort(), out Player player))
         {
-            player.Move(message.GetVector3(), message.GetVector3());
+            player.Move(message.GetInt(), message.GetVector3(), message.GetVector3());
         }
     }
 
@@ -67,6 +68,7 @@ public class Player : MonoBehaviour
     private static void SpawnMapObjects(Message message)
     {
         int objectCount = message.GetInt();
+        GameObject map = new GameObject("Map");
         for (int i = 0; i < objectCount; i++)
         {
             int id = message.GetInt();
@@ -82,10 +84,12 @@ public class Player : MonoBehaviour
             float sy = message.GetFloat();
             float sz = message.GetFloat();
 
+
             GameObject prefab = Resources.Load<GameObject>($"Prefabs/{prefabName}");
             if (prefab != null)
             {
-                GameObject obj = Instantiate(prefab, new Vector3(x, y, z), Quaternion.Euler(rx, ry, rz));
+
+                GameObject obj = Instantiate(prefab, new Vector3(x, y, z), Quaternion.Euler(rx, ry, rz), map.transform);
                 obj.transform.localScale = new Vector3(sx, sy, sz);
                 obj.GetComponent<NetworkedObject>().id = id;
             }

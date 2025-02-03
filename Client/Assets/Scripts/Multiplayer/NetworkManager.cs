@@ -5,7 +5,8 @@ using UnityEngine;
 
 public enum ServerToClientId : ushort
 {
-    playerSpawned = 1,
+    sync = 1,
+    playerSpawned,
     playerMovement,
     mapObjects,
     rigidBodies
@@ -37,9 +38,32 @@ public class NetworkManager : MonoBehaviour
     }
 
     public Client Client { get; private set; }
+    private int _serverTick;
+    public int ServerTick
+    {
+        get => _serverTick;
+        private set
+        {
+            _serverTick = value;
+            InterpolationTick = value - TickBetweenPositionUpdates;
+        }
+    }
+
+    public int InterpolationTick { get; private set; }
+    private int _ticksBetweenPositionUpdates;
+    public int TickBetweenPositionUpdates
+    {
+        get => _ticksBetweenPositionUpdates;
+        private set
+        {
+            _ticksBetweenPositionUpdates = value;
+            InterpolationTick = ServerTick - value;
+        }
+    }
 
     [SerializeField] private string ip;
     [SerializeField] private ushort port;
+    [SerializeField] private ushort tickDivergenceTolerance = 1;
 
     private void Awake()
     {
@@ -55,11 +79,14 @@ public class NetworkManager : MonoBehaviour
         Client.ConnectionFailed += FailedToConnect;
         Client.ClientDisconnected += PlayerLeft;
         Client.Disconnected += DidDisconnect;
+
+        ServerTick = 2;
     }
 
     private void FixedUpdate()
     {
         Client.Tick();
+        ServerTick++;
     }
 
     private void OnApplicationQuit()
@@ -98,5 +125,20 @@ public class NetworkManager : MonoBehaviour
         {
             Destroy(player.gameObject);
         }
+    }
+
+    private void SetTick(int serverTick)
+    {
+        if (Math.Abs(ServerTick - serverTick) > tickDivergenceTolerance)
+        {
+            Debug.Log($"Client tick: {ServerTick} -> {serverTick}");
+            ServerTick = serverTick;
+        }
+    }
+
+    [MessageHandler((ushort)ServerToClientId.sync)]
+    private static void Sync(Message message)
+    {
+        Singleton.SetTick(message.GetInt());
     }
 }
