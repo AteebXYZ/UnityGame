@@ -4,7 +4,8 @@ using UnityEngine;
 
 public enum ServerToClientId : ushort
 {
-    playerSpawned = 1,
+    sync = 1,
+    playerSpawned,
     playerMovement,
     mapObjects,
     rigidBodies
@@ -37,6 +38,7 @@ public class NetworkManager : MonoBehaviour
     }
 
     public Server Server { get; private set; }
+    public int CurrentTick { get; private set; }
 
     [SerializeField] private ushort port;
     [SerializeField] private ushort maxClientCount;
@@ -60,6 +62,11 @@ public class NetworkManager : MonoBehaviour
     private void FixedUpdate()
     {
         Server.Tick();
+        if (CurrentTick % 120 == 0)
+        {
+            SendSync();
+        }
+        CurrentTick++;
     }
 
     private void OnApplicationQuit()
@@ -75,4 +82,13 @@ public class NetworkManager : MonoBehaviour
         }
 
     }
+
+    private void SendSync()
+    {
+        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.sync);
+        message.AddInt(CurrentTick);
+        Server.SendToAll(message);
+    }
+
+
 }

@@ -2,6 +2,7 @@ using RiptideNetworking;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
 
 public class UIManager : MonoBehaviour
 {
@@ -50,6 +51,13 @@ public class UIManager : MonoBehaviour
         connectUI.SetActive(true);
 
         crosshairUI.SetActive(false);
+        Cursor.lockState = CursorLockMode.None;
+        GameObject map = GameObject.Find("Map");
+        if (map != null)
+        {
+            Destroy(map);
+        }
+
     }
 
     public void SendName()
