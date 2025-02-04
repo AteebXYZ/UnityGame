@@ -167,6 +167,11 @@ public class GrabController : MonoBehaviour
             }
         }
     }
+
+    public void Rotate(float rotateInput)
+    {
+        Debug.Log(rotateInput);
+    }
 }
 
 

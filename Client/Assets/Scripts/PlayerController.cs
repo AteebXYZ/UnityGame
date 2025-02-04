@@ -53,6 +53,18 @@ public class PlayerController : MonoBehaviour
         NetworkManager.Singleton.Client.Send(message);
     }
 
+    public void Rotate(InputAction.CallbackContext ctx)
+    {
+        var rotateInput = ctx.ReadValue<float>();
+        if (rotateInput != 0f)
+        {
+            rotateInput = 1f;
+        }
+        Message message = Message.Create(MessageSendMode.unreliable, ClientToServerId.sendRotate);
+        message.AddFloat(rotateInput);
+        NetworkManager.Singleton.Client.Send(message);
+    }
+
     private void SendInputs()
     {
         Message message = Message.Create(MessageSendMode.unreliable, ClientToServerId.inputs);

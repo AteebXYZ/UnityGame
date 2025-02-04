@@ -17,7 +17,8 @@ public enum ClientToServerId : ushort
     name = 1,
     inputs,
     sendGrab,
-    sendScroll
+    sendScroll,
+    sendRotate
 }
 
 public class NetworkManager : MonoBehaviour

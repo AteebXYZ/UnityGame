@@ -16,7 +16,8 @@ public enum ClientToServerId : ushort
     name = 1,
     inputs,
     sendGrab,
-    scroll
+    scroll,
+    sendRotate
 
 }
 

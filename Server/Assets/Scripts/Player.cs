@@ -118,5 +118,15 @@ public class Player : MonoBehaviour
             player.grab.Scroll(message.GetVector2());
         }
     }
+
+
+    [MessageHandler((ushort)ClientToServerId.sendRotate)]
+    private static void SetRotateInput(ushort fromClientId, Message message)
+    {
+        if (list.TryGetValue(fromClientId, out Player player))
+        {
+            player.grab.Rotate(message.GetFloat());
+        }
+    }
     #endregion
 }
