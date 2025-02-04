@@ -1,6 +1,7 @@
 using RiptideNetworking;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Player : MonoBehaviour
 {
@@ -39,6 +40,12 @@ public class Player : MonoBehaviour
         else
         {
             player = Instantiate(GameLogic.Singleton.PlayerPrefab, position, Quaternion.identity).GetComponent<Player>();
+            TMP_Text nameTag = player.GetComponentInChildren<TMP_Text>();
+            if (nameTag != null)
+            {
+                nameTag.text = username;
+            }
+
             player.IsLocal = false;
         }
 

@@ -24,9 +24,9 @@ public class RigidBodyController : MonoBehaviour
             {
                 rigidList.Add(obj);
             }
-            initialized = true;
-        }
 
+        }
+        initialized = true;
         Debug.Log($"[SERVER] RigidBodyController initialized with {rigidList.Count} rigid objects.");
     }
 
@@ -49,6 +49,10 @@ public class RigidBodyController : MonoBehaviour
         {
             foreach (NetworkedObject obj in rigidList)
             {
+                if (obj == null)
+                {
+                    return;
+                }
                 message.AddInt(obj.id);
                 message.AddVector3(obj.transform.position);
                 message.AddQuaternion(obj.transform.rotation);

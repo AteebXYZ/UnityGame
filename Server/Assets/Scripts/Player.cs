@@ -14,6 +14,11 @@ public class Player : MonoBehaviour
     [SerializeField]
     private PlayerMovement movement;
 
+    public GrabController Grab => grab;
+
+    [SerializeField]
+    private GrabController grab;
+
 
     [SerializeField]
     private Transform camTransform;
@@ -22,6 +27,7 @@ public class Player : MonoBehaviour
     {
         list.Remove(Id);
     }
+
 
 
 
@@ -94,9 +100,22 @@ public class Player : MonoBehaviour
     [MessageHandler((ushort)ClientToServerId.inputs)]
     private static void Inputs(ushort fromClientId, Message message)
     {
+        var moveInput = message.GetVector2();
+        var jumpInput = message.GetFloat();
+        var camForward = message.GetVector3();
+
         if (list.TryGetValue(fromClientId, out Player player))
         {
-            player.Movement.SetInputs(message.GetVector2(), message.GetFloat(), message.GetVector3());
+            player.Movement.SetInputs(moveInput, jumpInput, camForward);
+        }
+    }
+
+    [MessageHandler((ushort)ClientToServerId.scroll)]
+    private static void SetScrollInput(ushort fromClientId, Message message)
+    {
+        if (list.TryGetValue(fromClientId, out Player player))
+        {
+            player.grab.Scroll(message.GetVector2());
         }
     }
     #endregion

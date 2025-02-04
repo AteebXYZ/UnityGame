@@ -24,11 +24,11 @@ public class RigidbodyInterpolator : MonoBehaviour
 
     private void Update()
     {
-        if (!hasReceivedFirstUpdate)
-        {
-            // Ensure we don't move objects until we receive at least one valid update
-            return;
-        }
+        // if (!hasReceivedFirstUpdate)
+        // {
+        //     // Ensure we don't move objects until we receive at least one valid update
+        //     return;
+        // }
 
         for (int i = 0; i < futureTransformUpdates.Count; i++)
         {
@@ -42,10 +42,6 @@ public class RigidbodyInterpolator : MonoBehaviour
                 timeElapsed = 0f;
 
                 float ticksToReach = Mathf.Max(1, from.Tick - to.Tick);
-                if (from.Tick - to.Tick != 0)
-                {
-                    Debug.Log(from.Tick - to.Tick);
-                }
                 timeToReachTarget = ticksToReach * Time.fixedDeltaTime;
             }
         }
@@ -68,8 +64,8 @@ public class RigidbodyInterpolator : MonoBehaviour
             return;
         }
 
-        transform.position = Vector3.Lerp(from.Position, to.Position, lerpAmount);
-        transform.rotation = Quaternion.Slerp(from.Rotation, to.Rotation, lerpAmount);
+        transform.position = Vector3.LerpUnclamped(from.Position, to.Position, lerpAmount);
+        transform.rotation = Quaternion.SlerpUnclamped(from.Rotation, to.Rotation, lerpAmount);
     }
 
     public void NewUpdate(int tick, Vector3 position, Quaternion rotation)

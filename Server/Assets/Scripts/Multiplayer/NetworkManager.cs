@@ -15,7 +15,8 @@ public enum ClientToServerId : ushort
 {
     name = 1,
     inputs,
-    sendGrab
+    sendGrab,
+    scroll
 
 }
 
@@ -50,7 +51,9 @@ public class NetworkManager : MonoBehaviour
 
     private void Start()
     {
+        QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 60;
+
 
         RiptideLogger.Initialize(Debug.Log, Debug.Log, Debug.LogWarning, Debug.LogError, false);
 
@@ -89,6 +92,7 @@ public class NetworkManager : MonoBehaviour
         message.AddInt(CurrentTick);
         Server.SendToAll(message);
     }
+
 
 
 }

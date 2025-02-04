@@ -16,7 +16,8 @@ public enum ClientToServerId : ushort
 {
     name = 1,
     inputs,
-    sendGrab
+    sendGrab,
+    sendScroll
 }
 
 public class NetworkManager : MonoBehaviour
@@ -61,8 +62,8 @@ public class NetworkManager : MonoBehaviour
         }
     }
 
-    [SerializeField] private string ip;
-    [SerializeField] private ushort port;
+    public string ip;
+    public ushort port;
     [SerializeField] private ushort tickDivergenceTolerance = 1;
 
     private void Awake()

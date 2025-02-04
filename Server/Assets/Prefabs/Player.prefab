@@ -165,6 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movement: {fileID: 2478086429442695052}
+  grab: {fileID: 3799976504659371006}
   camTransform: {fileID: 4043597761010501366}
 --- !u!54 &1098299722573111025
 Rigidbody:
@@ -217,7 +218,7 @@ CapsuleCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5262112718532205827}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 8fe2f18e3ec1b2eedb03f7d6ec089b3b, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -247,7 +248,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 5853221866614297160}
   holder: {fileID: 270601600320292695}
-  forceMagnitude: 400
+  minGrabRange: 3
+  maxGrabRange: 6
+  forceMagnitude: 150
 --- !u!1 &5853221866614297160
 GameObject:
   m_ObjectHideFlags: 0

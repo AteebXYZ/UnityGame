@@ -41,11 +41,13 @@ public class Interpolator : MonoBehaviour
                     // Debug.Log(from.Tick - to.Tick);
                 }
                 timeToReachTarget = ticksToReach * Time.fixedDeltaTime;
+
             }
         }
 
         timeElapsed += Time.deltaTime;
-        // Debug.Log(timeElapsed / timeToReachTarget);
+        // if (timeElapsed / timeToReachTarget > 1.5) { Debug.Log(timeElapsed / timeToReachTarget); }
+
         InterpolatePosition(timeElapsed / timeToReachTarget);
     }
 

@@ -17,11 +17,13 @@ public class PlayerController : MonoBehaviour
 
     private float jumpState = 0f;
     private Vector2 moveInput;
+    private Vector2 scrollInput;
     void Start()
     {
         inputs = new List<object>();
         jumpState = 0f;
         moveInput = Vector2.zero;
+        scrollInput = Vector2.zero;
     }
 
     void FixedUpdate()
@@ -39,6 +41,16 @@ public class PlayerController : MonoBehaviour
     public void Jump(InputAction.CallbackContext ctx)
     {
         jumpState = ctx.ReadValue<float>();
+    }
+
+    public void Scroll(InputAction.CallbackContext ctx)
+    {
+        var scrollInputTemp = ctx.ReadValue<Vector2>();
+        scrollInput = new Vector2(scrollInputTemp.x / 120, scrollInputTemp.y / 120);
+        Debug.Log(scrollInput);
+        Message message = Message.Create(MessageSendMode.unreliable, ClientToServerId.sendScroll);
+        message.AddVector2(scrollInput);
+        NetworkManager.Singleton.Client.Send(message);
     }
 
     private void SendInputs()

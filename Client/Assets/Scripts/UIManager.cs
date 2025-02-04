@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 
 public class UIManager : MonoBehaviour
 {
+
     private static UIManager _singleton;
     public static UIManager Singleton
     {
@@ -25,10 +26,16 @@ public class UIManager : MonoBehaviour
     [Header("Connect")]
     [SerializeField] private GameObject connectUI;
     [SerializeField] private TMP_InputField usernameField;
+    [SerializeField] private TMP_InputField IPField;
+    [SerializeField] private TMP_InputField portField;
+    [SerializeField] private NetworkManager networkManager;
+
 
     [Header("Crosshair")]
 
     [SerializeField] private GameObject crosshairUI;
+
+
 
     private void Awake()
     {
@@ -41,8 +48,10 @@ public class UIManager : MonoBehaviour
         connectUI.SetActive(false);
 
         crosshairUI.SetActive(true);
-
+        NetworkManager.Singleton.ip = IPField.text;
+        NetworkManager.Singleton.port = ushort.Parse(portField.text);
         NetworkManager.Singleton.Connect();
+
     }
 
     public void BackToMain()
@@ -59,6 +68,8 @@ public class UIManager : MonoBehaviour
         }
 
     }
+
+
 
     public void SendName()
     {
