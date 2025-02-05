@@ -20,9 +20,9 @@ public class Player : MonoBehaviour
         list.Remove(Id);
     }
 
-    private void Move(int tick, Vector3 newPosition, Vector3 forward)
+    private void Move(int tick, Vector3 newPosition, Quaternion newRotation, Vector3 forward)
     {
-        interpolator.NewUpdate(tick, newPosition);
+        interpolator.NewUpdate(tick, newPosition, newRotation);
         if (!IsLocal)
         {
             camTransform.forward = forward;
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
     {
         if (list.TryGetValue(message.GetUShort(), out Player player))
         {
-            player.Move(message.GetInt(), message.GetVector3(), message.GetVector3());
+            player.Move(message.GetInt(), message.GetVector3(), message.GetQuaternion(), message.GetVector3());
         }
     }
 

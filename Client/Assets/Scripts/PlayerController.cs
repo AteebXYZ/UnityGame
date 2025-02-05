@@ -75,7 +75,11 @@ public class PlayerController : MonoBehaviour
 
     public void Shoot(InputAction.CallbackContext ctx)
     {
-
+        if (ctx.performed)
+        {
+            Message message = Message.Create(MessageSendMode.unreliable, ClientToServerId.sendShoot);
+            NetworkManager.Singleton.Client.Send(message);
+        }
     }
 
     private void SendInputs()

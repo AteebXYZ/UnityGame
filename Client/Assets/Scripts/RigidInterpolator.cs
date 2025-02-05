@@ -53,8 +53,6 @@ public class RigidbodyInterpolator : MonoBehaviour
 
     private void InterpolateTransform(float lerpAmount)
     {
-        if (!hasReceivedFirstUpdate)
-            return;
 
         bool shouldInterpolatePosition = (to.Position - previous.Position).sqrMagnitude >= squareMovementThreshold || to.Position != from.Position;
         bool shouldInterpolateRotation = Quaternion.Angle(to.Rotation, previous.Rotation) >= squareRotationThreshold || to.Rotation != from.Rotation;

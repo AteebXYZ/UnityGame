@@ -13,13 +13,14 @@ public class Interpolator : MonoBehaviour
     private TransformUpdate to;
     private TransformUpdate from;
     private TransformUpdate previous;
+    private float squareRotationThreshold = 0f;
 
     private void Start()
     {
         squareMovementThreshold = movementThreshold * movementThreshold;
-        to = new TransformUpdate(NetworkManager.Singleton.ServerTick, transform.position);
-        from = new TransformUpdate(NetworkManager.Singleton.InterpolationTick, transform.position);
-        previous = new TransformUpdate(NetworkManager.Singleton.InterpolationTick, transform.position);
+        to = new TransformUpdate(NetworkManager.Singleton.ServerTick, transform.position, transform.rotation);
+        from = new TransformUpdate(NetworkManager.Singleton.InterpolationTick, transform.position, transform.rotation);
+        previous = new TransformUpdate(NetworkManager.Singleton.InterpolationTick, transform.position, transform.rotation);
     }
 
     private void Update()
@@ -30,7 +31,7 @@ public class Interpolator : MonoBehaviour
             {
                 previous = to;
                 to = futureTransformUpdates[i];
-                from = new TransformUpdate(NetworkManager.Singleton.InterpolationTick, transform.position);
+                from = new TransformUpdate(NetworkManager.Singleton.InterpolationTick, transform.position, transform.rotation);
                 futureTransformUpdates.RemoveAt(i);
                 i--;
                 timeElapsed = 0f;
@@ -53,19 +54,21 @@ public class Interpolator : MonoBehaviour
 
     private void InterpolatePosition(float lerpAmount)
     {
-        if ((to.Position - previous.Position).sqrMagnitude < squareMovementThreshold)
-        {
-            if (to.Position != from.Position)
-            {
-                transform.position = Vector3.Lerp(previous.Position, to.Position, lerpAmount);
-            }
-            return;
-        }
+        bool shouldInterpolatePosition = (to.Position - previous.Position).sqrMagnitude >= squareMovementThreshold || to.Position != from.Position;
+        bool shouldInterpolateRotation = Quaternion.Angle(to.Rotation, previous.Rotation) >= squareRotationThreshold || to.Rotation != from.Rotation;
 
-        transform.position = Vector3.LerpUnclamped(from.Position, to.Position, lerpAmount);
+        if (shouldInterpolatePosition)
+            transform.position = Vector3.LerpUnclamped(from.Position, to.Position, lerpAmount);
+        else
+            transform.position = Vector3.Lerp(previous.Position, to.Position, lerpAmount);
+
+        if (shouldInterpolateRotation)
+            transform.rotation = Quaternion.SlerpUnclamped(from.Rotation, to.Rotation, lerpAmount);
+        else
+            transform.rotation = Quaternion.Slerp(previous.Rotation, to.Rotation, lerpAmount);
     }
 
-    public void NewUpdate(int tick, Vector3 position)
+    public void NewUpdate(int tick, Vector3 position, Quaternion rotation)
     {
         if (tick <= NetworkManager.Singleton.InterpolationTick)
         {
@@ -76,12 +79,12 @@ public class Interpolator : MonoBehaviour
         {
             if (tick < futureTransformUpdates[i].Tick)
             {
-                futureTransformUpdates.Insert(i, new TransformUpdate(tick, position));
+                futureTransformUpdates.Insert(i, new TransformUpdate(tick, position, rotation));
                 return;
             }
         }
 
-        futureTransformUpdates.Add(new TransformUpdate(tick, position));
+        futureTransformUpdates.Add(new TransformUpdate(tick, position, rotation));
     }
 
 }

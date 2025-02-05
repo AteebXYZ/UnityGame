@@ -55,7 +55,7 @@ public class GrabController : MonoBehaviour
                     }
                     if (isPlayer)
                     {
-                        rb.drag = 3;
+                        rb.drag = 1;
                         rb.freezeRotation = true;
                         rb.useGravity = false;
                         rb.AddForce(direction * forceMagnitude, ForceMode.Force);
@@ -77,12 +77,13 @@ public class GrabController : MonoBehaviour
                 rb.useGravity = true;
                 grabbedObject.GetComponent<RigidVariables>().beingHeld = false;
             }
-            if (rb != null && isPlayer)
+            if (rb != null && isPlayer && grabbedObject.GetComponent<RigidVariables>().beingHeld)
             {
                 rb.drag = 0;
                 rb.freezeRotation = true;
                 rb.useGravity = true;
                 isPlayer = false;
+                gameObject.GetComponent<PlayerReset>().ResetRotation();
             }
             grabbedObject = null;
         }
@@ -119,6 +120,7 @@ public class GrabController : MonoBehaviour
                         grabbedObject = hit.transform.gameObject;
                         isGrabbing = true;
                         isPlayer = true;
+                        grabbedObject.GetComponent<RigidVariables>().beingHeld = true;
                     }
                 }
             }

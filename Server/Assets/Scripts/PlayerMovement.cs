@@ -34,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
         Move();
         Jump();
         SendMovement();
-        Debug.DrawRay(camProxy.position, camProxy.forward * 1.5f, Color.green);
+        // Debug.DrawRay(camProxy.position, camProxy.forward * 1.5f, Color.green);
 
     }
 
@@ -89,6 +89,7 @@ public class PlayerMovement : MonoBehaviour
         message.AddUShort(player.Id);
         message.AddInt(NetworkManager.Singleton.CurrentTick);
         message.AddVector3(transform.position);
+        message.AddQuaternion(transform.rotation);
         message.AddVector3(camProxy.forward);
         NetworkManager.Singleton.Server.SendToAll(message);
     }
