@@ -7,28 +7,38 @@ using RiptideNetworking.Utils;
 public class GrabController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private GameObject cam;     // Player's camera
-    [SerializeField] private GameObject holder;   // The transform where grabbed objects should go
+    [SerializeField] private GameObject cam;
+    [SerializeField] private GameObject holder;
     [SerializeField] private float minGrabRange = 3f;
     [SerializeField] private float maxGrabRange = 6f;
 
     [Header("Settings")]
     [SerializeField] private float forceMagnitude = 10f;
 
-    // Instance variables to track grabbing state for each player
     private bool isGrabbing = false;
     private GameObject grabbedObject = null;
     private bool isPlayer;
     private Vector2 scrollInput;
+    private float rotateInput;
+    private Vector2 rotateVector;
 
-    // This method is called every frame on each player's instance
+
     private void Update()
     {
         if (isGrabbing && grabbedObject != null)
         {
-            // Calculate direction and distance from the grabbed object to the holder
+            SendGrabbing(true);
             Vector3 direction = holder.transform.position - grabbedObject.transform.position;
             float distance = Vector3.Distance(holder.transform.position, grabbedObject.transform.position);
+
+            if (rotateInput == 1)
+            {
+                grabbedObject.transform.Rotate(Vector3.up * -rotateVector.x, Space.World);
+                // grabbedObject.transform.Rotate(grabbedObject.transform.right * rotateVector.y, Space.Self);  // X-axis (vertical)
+
+                // grabbedObject.transform.Rotate(Vector3.down, rotateVector.x);
+                grabbedObject.transform.Rotate(Vector3.right, rotateVector.y);
+            }
 
             if (distance > 0.2f)
             {
@@ -42,7 +52,6 @@ public class GrabController : MonoBehaviour
                         rb.freezeRotation = true;
                         rb.useGravity = false;
                         rb.AddForce(direction * forceMagnitude, ForceMode.Force);
-
                     }
                     if (isPlayer)
                     {
@@ -50,13 +59,16 @@ public class GrabController : MonoBehaviour
                         rb.freezeRotation = true;
                         rb.useGravity = false;
                         rb.AddForce(direction * forceMagnitude, ForceMode.Force);
+
                     }
                 }
             }
+
         }
+
         else if (grabbedObject != null)
         {
-            // Release the object and restore its physics
+            SendGrabbing(false);
             Rigidbody rb = grabbedObject.GetComponent<Rigidbody>();
             if (rb != null && grabbedObject.GetComponent<RigidVariables>().beingHeld && !isPlayer)
             {
@@ -76,23 +88,17 @@ public class GrabController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Processes the grab input for this player.
-    /// </summary>
-    /// <param name="pressing">True if the grab button was pressed.</param>
+
     public void ProcessGrab(bool pressing)
     {
-        // If pressing the grab button, toggle the grabbing state.
         if (pressing)
         {
             if (isGrabbing)
             {
-                // If already grabbing, release the object.
                 isGrabbing = false;
             }
             else
             {
-                // If not grabbing, try to grab an object.
                 Ray ray = new Ray(cam.transform.position, cam.transform.forward);
                 Debug.DrawRay(ray.origin, ray.direction * 3f, Color.red, 3f);
                 if (Physics.Raycast(ray, out RaycastHit hit, 3f))
@@ -120,14 +126,12 @@ public class GrabController : MonoBehaviour
         }
 
 
-#pragma warning disable CS8321 // Local function is declared but never used
+#pragma warning disable CS8321
         [MessageHandler((ushort)ClientToServerId.sendGrab)]
         static void Grab(ushort fromClientId, Message message)
         {
-            // Retrieve the player object corresponding to the client ID.
             if (Player.list.TryGetValue(fromClientId, out Player player))
             {
-                // Retrieve the player's GrabController instance.
                 GrabController grabController = player.GetComponentInChildren<GrabController>();
                 if (grabController != null)
                 {
@@ -144,7 +148,7 @@ public class GrabController : MonoBehaviour
                 Debug.LogError("No player found for client " + fromClientId);
             }
         }
-#pragma warning restore CS8321 // Local function is declared but never used
+#pragma warning restore CS8321
     }
 
     public void Scroll(Vector2 scrollInput)
@@ -170,8 +174,23 @@ public class GrabController : MonoBehaviour
 
     public void Rotate(float rotateInput)
     {
-        Debug.Log(rotateInput);
+        this.rotateInput = rotateInput;
+    }
+    public void RotateVector(Vector2 rotateVector)
+    {
+        this.rotateVector = rotateVector;
+    }
+
+
+
+
+    private void SendGrabbing(bool grabbing)
+    {
+        Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.isGrabbing);
+        message.AddBool(grabbing);
+        NetworkManager.Singleton.Server.SendToAll(message);
     }
 }
+
 
 

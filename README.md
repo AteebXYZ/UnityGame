@@ -2,7 +2,6 @@
 
 **TODO**
 
-- [ ] Rotate object funtionality
 - [ ] Knockback projectile
 - [ ] Complete Gamepad support
 - [ ] Create better map and character
@@ -11,6 +10,7 @@
 
 **DONE**
 
+- [x] Rotate object funtionality
 - [x] Multiplayer syncing workflow
 - [x] Player movement
 - [x] Rigidbody physics

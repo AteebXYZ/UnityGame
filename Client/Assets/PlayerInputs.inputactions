@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Rotate",
+                    "name": "RotatePress",
                     "type": "Button",
                     "id": "6caaa2db-5187-4971-97b7-046e4f9ba50c",
                     "expectedControlType": "Button",
@@ -58,6 +58,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Rotate",
+                    "type": "Value",
+                    "id": "f2aedb05-0c8d-433b-aa13-9d78f00f26b3",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Shoot",
+                    "type": "Button",
+                    "id": "2237ee85-9a46-455d-9c7c-3d07f1400ad9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -284,11 +302,11 @@
                 {
                     "name": "",
                     "id": "f073ade2-f643-458d-831e-0155937dc9b0",
-                    "path": "<Gamepad>/buttonNorth",
+                    "path": "<Gamepad>/leftShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "gamepad",
-                    "action": "Rotate",
+                    "action": "RotatePress",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -299,7 +317,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "kbm",
-                    "action": "Rotate",
+                    "action": "RotatePress",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -311,6 +329,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Scroll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a51e3322-6db8-4412-ab13-0f755ddf60c0",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "kbm",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "771a4ec7-ec1a-47ce-943f-10bf2270105d",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "ScaleVector2(x=4,y=4)",
+                    "groups": "gamepad",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "373061bd-e8ce-4e0d-8b65-69a831efae48",
+                    "path": "<Keyboard>/leftShift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

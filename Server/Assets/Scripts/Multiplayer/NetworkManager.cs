@@ -8,7 +8,8 @@ public enum ServerToClientId : ushort
     playerSpawned,
     playerMovement,
     mapObjects,
-    rigidBodies
+    rigidBodies,
+    isGrabbing
 }
 
 public enum ClientToServerId : ushort
@@ -17,8 +18,9 @@ public enum ClientToServerId : ushort
     inputs,
     sendGrab,
     scroll,
-    sendRotate
-
+    sendRotate,
+    sendRotateVector,
+    sendShoot
 }
 
 public class NetworkManager : MonoBehaviour

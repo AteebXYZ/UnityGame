@@ -9,6 +9,7 @@ public class RigidbodyInterpolator : MonoBehaviour
 
     private readonly List<TransformUpdate> futureTransformUpdates = new List<TransformUpdate>();
     private float squareMovementThreshold;
+    private float squareRotationThreshold = 0f;
     private TransformUpdate to;
     private TransformUpdate from;
     private TransformUpdate previous;
@@ -52,20 +53,21 @@ public class RigidbodyInterpolator : MonoBehaviour
 
     private void InterpolateTransform(float lerpAmount)
     {
-        if (!hasReceivedFirstUpdate) return;
-
-        if ((to.Position - previous.Position).sqrMagnitude < squareMovementThreshold)
-        {
-            if (to.Position != from.Position)
-            {
-                transform.position = Vector3.Lerp(previous.Position, to.Position, lerpAmount);
-                transform.rotation = Quaternion.Slerp(previous.Rotation, to.Rotation, lerpAmount);
-            }
+        if (!hasReceivedFirstUpdate)
             return;
-        }
 
-        transform.position = Vector3.LerpUnclamped(from.Position, to.Position, lerpAmount);
-        transform.rotation = Quaternion.SlerpUnclamped(from.Rotation, to.Rotation, lerpAmount);
+        bool shouldInterpolatePosition = (to.Position - previous.Position).sqrMagnitude >= squareMovementThreshold || to.Position != from.Position;
+        bool shouldInterpolateRotation = Quaternion.Angle(to.Rotation, previous.Rotation) >= squareRotationThreshold || to.Rotation != from.Rotation;
+
+        if (shouldInterpolatePosition)
+            transform.position = Vector3.LerpUnclamped(from.Position, to.Position, lerpAmount);
+        else
+            transform.position = Vector3.Lerp(previous.Position, to.Position, lerpAmount);
+
+        if (shouldInterpolateRotation)
+            transform.rotation = Quaternion.SlerpUnclamped(from.Rotation, to.Rotation, lerpAmount);
+        else
+            transform.rotation = Quaternion.Slerp(previous.Rotation, to.Rotation, lerpAmount);
     }
 
     public void NewUpdate(int tick, Vector3 position, Quaternion rotation)
