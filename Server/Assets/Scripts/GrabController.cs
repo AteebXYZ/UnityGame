@@ -22,7 +22,6 @@ public class GrabController : MonoBehaviour
     private float rotateInput;
     private Vector2 rotateVector;
 
-
     private void Update()
     {
         if (isGrabbing && grabbedObject != null)
@@ -34,9 +33,6 @@ public class GrabController : MonoBehaviour
             if (rotateInput == 1)
             {
                 grabbedObject.transform.Rotate(Vector3.up * -rotateVector.x, Space.World);
-                // grabbedObject.transform.Rotate(grabbedObject.transform.right * rotateVector.y, Space.Self);  // X-axis (vertical)
-
-                // grabbedObject.transform.Rotate(Vector3.down, rotateVector.x);
                 grabbedObject.transform.Rotate(Vector3.right, rotateVector.y);
             }
 
@@ -47,7 +43,6 @@ public class GrabController : MonoBehaviour
                 {
                     if (!isPlayer)
                     {
-
                         rb.drag = 10;
                         rb.freezeRotation = true;
                         rb.useGravity = false;
@@ -59,13 +54,11 @@ public class GrabController : MonoBehaviour
                         rb.freezeRotation = true;
                         rb.useGravity = false;
                         rb.AddForce(direction * forceMagnitude, ForceMode.Force);
-
+                        grabbedObject.GetComponent<PlayerMovement>().useRotation = false;
                     }
                 }
             }
-
         }
-
         else if (grabbedObject != null)
         {
             SendGrabbing(false);
@@ -83,12 +76,21 @@ public class GrabController : MonoBehaviour
                 rb.freezeRotation = true;
                 rb.useGravity = true;
                 isPlayer = false;
-                gameObject.GetComponent<PlayerReset>().ResetRotation();
+                grabbedObject.GetComponent<RigidVariables>().beingHeld = false;
+                StartCoroutine(EnableRotationAfterDelay(grabbedObject));
             }
             grabbedObject = null;
         }
     }
 
+    private IEnumerator EnableRotationAfterDelay(GameObject obj)
+    {
+        yield return new WaitForSeconds(3.5f);
+        if (obj != null)
+        {
+            obj.GetComponent<PlayerMovement>().useRotation = true;
+        }
+    }
 
     public void ProcessGrab(bool pressing)
     {
@@ -104,7 +106,6 @@ public class GrabController : MonoBehaviour
                 Debug.DrawRay(ray.origin, ray.direction * 3f, Color.red, 3f);
                 if (Physics.Raycast(ray, out RaycastHit hit, 3f))
                 {
-
                     if (hit.transform.gameObject.CompareTag("Grabbable"))
                     {
                         if (!hit.transform.gameObject.GetComponent<RigidVariables>().beingHeld)
@@ -124,9 +125,7 @@ public class GrabController : MonoBehaviour
                     }
                 }
             }
-
         }
-
 
 #pragma warning disable CS8321
         [MessageHandler((ushort)ClientToServerId.sendGrab)]
@@ -156,21 +155,10 @@ public class GrabController : MonoBehaviour
     public void Scroll(Vector2 scrollInput)
     {
         Debug.Log(scrollInput);
-        if (scrollInput.y > 0)
+        float newZPosition = holder.transform.localPosition.z + (scrollInput.y > 0 ? 0.5f : -0.5f);
+        if (newZPosition <= maxGrabRange && newZPosition >= minGrabRange)
         {
-            float newZPosition = holder.transform.localPosition.z + 0.5f;
-            if (newZPosition <= maxGrabRange && newZPosition >= minGrabRange)
-            {
-                holder.transform.localPosition = new Vector3(holder.transform.localPosition.x, holder.transform.localPosition.y, newZPosition);
-            }
-        }
-        else if (scrollInput.y < 0)
-        {
-            float newZPosition = holder.transform.localPosition.z - 0.5f;
-            if (newZPosition <= maxGrabRange && newZPosition >= minGrabRange)
-            {
-                holder.transform.localPosition = new Vector3(holder.transform.localPosition.x, holder.transform.localPosition.y, newZPosition);
-            }
+            holder.transform.localPosition = new Vector3(holder.transform.localPosition.x, holder.transform.localPosition.y, newZPosition);
         }
     }
 
@@ -183,9 +171,6 @@ public class GrabController : MonoBehaviour
         this.rotateVector = rotateVector;
     }
 
-
-
-
     private void SendGrabbing(bool grabbing)
     {
         Message message = Message.Create(MessageSendMode.unreliable, ServerToClientId.isGrabbing);
@@ -193,6 +178,3 @@ public class GrabController : MonoBehaviour
         NetworkManager.Singleton.Server.SendToAll(message);
     }
 }
-
-
-

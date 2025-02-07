@@ -65,11 +65,18 @@ public class Player : MonoBehaviour
     [MessageHandler((ushort)ServerToClientId.playerMovement)]
     private static void PlayerMovement(Message message)
     {
+
         if (list.TryGetValue(message.GetUShort(), out Player player))
         {
-            player.Move(message.GetInt(), message.GetVector3(), message.GetQuaternion(), message.GetVector3());
+            int tick = message.GetInt();
+            Vector3 position = message.GetVector3();
+            Quaternion rotation = message.GetQuaternion();
+            Vector3 camForward = message.GetVector3();
+            Debug.Log(rotation);
+            player.Move(tick, position, rotation, camForward);
         }
     }
+
 
     [MessageHandler((ushort)ServerToClientId.mapObjects)]
     private static void SpawnMapObjects(Message message)

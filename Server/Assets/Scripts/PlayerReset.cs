@@ -15,25 +15,10 @@ public class PlayerReset : MonoBehaviour
 
     public void ResetRotation()
     {
-        initialRotation = transform.rotation;
-        targetRotation = Quaternion.Euler(0, transform.eulerAngles.y, 0);
-        timeElapsed = 0f;
-        isResetting = true;
+        transform.rotation = Quaternion.Euler(0, transform.rotation.y, 0);
     }
 
     private void Update()
     {
-        if (isResetting)
-        {
-            timeElapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(timeElapsed / resetDuration);
-            transform.rotation = Quaternion.Slerp(initialRotation, targetRotation, t);
-
-            if (t >= 1f)
-            {
-                isResetting = false;
-                transform.rotation = targetRotation; // Ensure final rotation is exact
-            }
-        }
     }
 }

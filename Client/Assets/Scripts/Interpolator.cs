@@ -58,14 +58,24 @@ public class Interpolator : MonoBehaviour
         bool shouldInterpolateRotation = Quaternion.Angle(to.Rotation, previous.Rotation) >= squareRotationThreshold || to.Rotation != from.Rotation;
 
         if (shouldInterpolatePosition)
+        {
             transform.position = Vector3.LerpUnclamped(from.Position, to.Position, lerpAmount);
+        }
         else
+        {
             transform.position = Vector3.Lerp(previous.Position, to.Position, lerpAmount);
+        }
 
         if (shouldInterpolateRotation)
-            transform.rotation = Quaternion.SlerpUnclamped(from.Rotation, to.Rotation, lerpAmount);
+        {
+            // transform.rotation = Quaternion.SlerpUnclamped(from.Rotation, to.Rotation, lerpAmount);
+            transform.rotation = to.Rotation;
+        }
         else
-            transform.rotation = Quaternion.Slerp(previous.Rotation, to.Rotation, lerpAmount);
+        {
+            // transform.rotation = Quaternion.Slerp(previous.Rotation, to.Rotation, lerpAmount);
+            transform.rotation = to.Rotation;
+        }
     }
 
     public void NewUpdate(int tick, Vector3 position, Quaternion rotation)

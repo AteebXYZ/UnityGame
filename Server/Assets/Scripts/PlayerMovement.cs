@@ -16,6 +16,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 playerInputs;
     private Vector3 moveVector;
     private float jumpState;
+
+    public bool useRotation = true;
     private void OnValidate()
     {
         if (rb == null)
@@ -33,6 +35,13 @@ public class PlayerMovement : MonoBehaviour
     {
         Move();
         Jump();
+        if (useRotation)
+        {
+            var forward = camProxy.rotation * Vector3.forward;
+            forward.y = 0;
+            transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
+
+        }
         SendMovement();
         // Debug.DrawRay(camProxy.position, camProxy.forward * 1.5f, Color.green);
 
